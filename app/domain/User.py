@@ -1,3 +1,4 @@
+from __future__ import annotations
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -20,7 +21,7 @@ class User:
         return hash(self.user_id)
 
     @classmethod
-    def create(cls, name: str, hashed_password: str, email: str) -> "User":
+    def create(cls, name: str, hashed_password: str, email: str) -> User:
         """Create a new user with a fresh identity."""
         return cls(
             name=name,
