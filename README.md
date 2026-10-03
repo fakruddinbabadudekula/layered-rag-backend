@@ -1,4 +1,4 @@
-# Production RAG
+# Domain Driven Architecture(nxt update)
 
 ⚠️ Learning Project — Not Production Ready
 
