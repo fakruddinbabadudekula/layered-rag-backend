@@ -1,24 +1,17 @@
-from app.domain.repositories.user_repository import AbstractUserRepository
-from app.domain.repositories.notebook_repository import AbstractNotebookRepository
 from abc import ABC, abstractmethod
+from app.domain.repositories import refresh_token_repository, user_repository
 
 
 class AbstractUnitOfWork(ABC):
-    
+    refresh_tokens: refresh_token_repository.AbstractRefreshTokenRepository
+    users: user_repository.AbstractUserRepository
+
     @abstractmethod
     async def __aexit__(self, *args) -> None:
         self.rollback()
 
     @abstractmethod
-    async def commit(self) -> None:...
+    async def commit(self) -> None: ...
 
     @abstractmethod
-    async def rollback(self) -> None:...
-
-    @property
-    @abstractmethod
-    def notebooks(self) -> AbstractNotebookRepository:...
-
-    @property
-    @abstractmethod
-    def users(self) -> AbstractUserRepository:...
+    async def rollback(self) -> None: ...

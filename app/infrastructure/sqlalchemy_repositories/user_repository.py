@@ -1,4 +1,3 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.domain.repositories.user_repository import AbstractUserRepository
 from app.core.exceptions import DuplicateResourceException
 from app.domain.User import User
@@ -10,7 +9,7 @@ from app.infrastructure.mappers import orm_to_user, user_to_orm
 from uuid import UUID
 
 
-class SqlAlchemyUserRepository(AbstractUserRepository):
+class UserRepository(AbstractUserRepository):
     def __init__(self, db: AsyncSession):
         self._db = db
 
@@ -41,4 +40,4 @@ class SqlAlchemyUserRepository(AbstractUserRepository):
             )
 
     async def delete_user(self, user_id: UUID) -> None:
-        await self._db.execute(delete(SqlUser).where(SqlUser.user_id == str(user_id)))
+        await self._db.execute(delete(SqlUser).where(SqlUser.user_id == user_id))

@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy import DateTime, func, Text, ForeignKey
 import uuid
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from app.domain.RefreshToken import TokenStatus
 
 
 class RefreshToken(Base):
@@ -31,5 +32,5 @@ class RefreshToken(Base):
     expires_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )
-    used: Mapped[bool] = mapped_column(default=False)
-    # later we can focus on relationships for now to testing purpose.
+    status: Mapped[TokenStatus] = mapped_column(default=TokenStatus.ACTIVE)
+    revoked_at: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), nullable=True)
