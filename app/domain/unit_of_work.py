@@ -7,7 +7,7 @@ class AbstractUnitOfWork(ABC):
     users: user_repository.AbstractUserRepository
 
     @abstractmethod
-    async def __enter__(self) -> "AbstractUnitOfWork":
+    async def __aenter__(self) -> "AbstractUnitOfWork":
         return self
 
     @abstractmethod

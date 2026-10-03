@@ -11,7 +11,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
         self.session_maker: async_sessionmaker[AsyncSession]
         self.db_session: AsyncSession | None = None
 
-    async def __enter__(self):
+    async def __aenter__(self):
         self.db_session = self.session_maker()
         self.user = user_repository.UserRepository(self.db_session)
         self.refresh_token = refresh_token_repository.RefreshTokenRepository(
