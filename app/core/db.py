@@ -3,6 +3,7 @@ contain get_db fucntion which creates a connection instance """
 
 
 from sqlalchemy.ext.asyncio import AsyncSession,create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.core.config import settings
 
@@ -21,14 +22,7 @@ async def init_db():
         
     
 # an async session maker, returns an contextmanager  
-AsyncSessionMaker=sessionmaker(
+async_session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
     bind=a_engine,
-    class_=AsyncSession,
-     expire_on_commit=False
+    expire_on_commit=False,
 )
-      
-# dependency function return session, where we can interact with the database.
-async def get_db():
-    async with AsyncSessionMaker() as session:
-        yield session 
-        
