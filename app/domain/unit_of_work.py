@@ -7,6 +7,10 @@ class AbstractUnitOfWork(ABC):
     users: user_repository.AbstractUserRepository
 
     @abstractmethod
+    async def __enter__(self) -> "AbstractUnitOfWork":
+        return self
+
+    @abstractmethod
     async def __aexit__(self, *args) -> None:
         self.rollback()
 
