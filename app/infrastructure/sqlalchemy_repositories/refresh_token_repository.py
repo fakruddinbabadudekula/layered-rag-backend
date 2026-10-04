@@ -1,4 +1,6 @@
-from app.domain.repositories.refresh_token_repository import AbstractRefreshTokenRepository
+from app.domain.repositories.refresh_token_repository import (
+    AbstractRefreshTokenRepository,
+)
 from app.domain.RefreshToken import RefreshToken as DomainRefreshToken, TokenStatus
 from app.models.refresh_token import RefreshToken as SqlRefreshToken
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -40,7 +42,7 @@ class RefreshTokenRepository(AbstractRefreshTokenRepository):
         await self._db.execute(
             update(SqlRefreshToken)
             .where(SqlRefreshToken.token_id == token.token_id)
-            .values(status=TokenStatus.REVOKED)
+            .values(status=token.status, revoked_at=token.revoked_at)
         )
 
     async def delete(self, token_id: UUID) -> None:

@@ -13,8 +13,10 @@ pwd_context = CryptContext(
     deprecated="auto",
 )
 
-def hash_token(raw:str)->str:
+
+def hash_token(raw: str) -> str:
     return hashlib.sha256(raw.encode()).hexdigest()
+
 
 def hash_password(plain_password: str) -> str:
     """takes plain password and return hashed password"""
@@ -26,9 +28,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(subject: str) -> tuple[str,datetime]:
-    """takes data/subject and create new access token"""
-    now = datetime.now(timezone.utc)
+def create_access_token(subject: str, now: datetime) -> tuple[str, datetime]:
+    """takes data/subject, now(timestamp) and create new access token"""
     expire = now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {
         "sub": str(subject),
@@ -42,9 +43,8 @@ def create_access_token(subject: str) -> tuple[str,datetime]:
     )
 
 
-def create_refresh_token(subject: str | Any) -> tuple[str,datetime]:
-    """takes data/subject and create new refresh token"""
-    now = datetime.now(timezone.utc)
+def create_refresh_token(subject: str | Any, now: datetime) -> tuple[str, datetime]:
+    """takes data/subject, now(timestamp) and create new refresh token"""
     expire = now + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
     payload = {
         "sub": str(subject),

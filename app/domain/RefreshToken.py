@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 from datetime import datetime, timezone, timedelta
 from enum import Enum
+from app.core.config import settings
 
 
 class TokenStatus(str, Enum):
@@ -28,17 +29,16 @@ class RefreshToken:
         hashed_token: str,
         user_id: UUID,
         family_id: UUID,
-        refresht_token_expire_days: int = 7,
+        created_at: datetime,
     ) -> RefreshToken:
-        now = datetime.now(timezone.utc)
         return cls(
             token_id=uuid4(),
             hashed_token=hashed_token,
             status=TokenStatus.ACTIVE,
             user_id=user_id,
-            created_at=now,
+            created_at=created_at,
             family_id=family_id,
-            expires_at=now + timedelta(days=refresht_token_expire_days),
+            expires_at=created_at + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS),
             revoked_at=None,
         )
 
@@ -48,8 +48,11 @@ class RefreshToken:
         self.status = TokenStatus.REVOKED
         self.revoked_at = datetime.now(timezone.utc)
 
+    def is_revoked(self) -> bool:
+        return self.status == TokenStatus.REVOKED
+
     def is_expired(self) -> bool:
         return datetime.now(timezone.utc) > self.expires_at
 
     def is_valid(self) -> bool:
-        return self.status == TokenStatus.ACTIVE and self.is_expired
+        return self.status == TokenStatus.ACTIVE and not self.is_expired
