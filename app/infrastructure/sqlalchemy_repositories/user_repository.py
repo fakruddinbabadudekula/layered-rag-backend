@@ -33,7 +33,7 @@ class UserRepository(AbstractUserRepository):
             self._db.add(new_user_orm)
             await self._db.flush()
         except IntegrityError as e:
-            self._db.rollback()  # Whoever corrupts the session state is responsible for cleaning it up.Without trusting what caller do next.
+            await self._db.rollback()  # Whoever corrupts the session state is responsible for cleaning it up.Without trusting what caller do next.
             # Then why doesn uow__exist__() rollback, if we clean, we manually do rollback like above exceptions where it raised from user things right, but uow rollback is used to rollback for unkown errors like timeout,connection related.
             raise DuplicateResourceException(
                 "user_already_exist", details={"user_email": new_user_orm.email}

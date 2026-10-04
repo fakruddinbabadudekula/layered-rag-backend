@@ -1,3 +1,7 @@
+import datetime
+from time import timezone
+import time
+
 from app.domain.repositories.refresh_token_repository import (
     AbstractRefreshTokenRepository,
 )
@@ -32,10 +36,11 @@ class RefreshTokenRepository(AbstractRefreshTokenRepository):
         return orm_to_refresh_token(token_orm) if token_orm else None
 
     async def revoke_all_tokens_by_family_id(self, family_id: UUID) -> None:
+        now=datetime.now(timezone.utc)
         await self._db.execute(
             update(SqlRefreshToken)
             .where(SqlRefreshToken.family_id == family_id)
-            .values(status=TokenStatus.REVOKED)
+            .values(status=TokenStatus.REVOKED, revoked_at=now)
         )
 
     async def save(self, token: DomainRefreshToken) -> None:

@@ -17,13 +17,28 @@ def orm_to_user(orm: OrmUser) -> DomainUser:
 
 
 def user_to_orm(user: DomainUser) -> OrmUser:
-    user_dict = asdict(user)
-    return OrmUser(user_dict)
+    return OrmUser(
+        name=user.name,
+        email=user.email,
+        hashed_password=user.hashed_password,
+        user_id=user.user_id,
+        created_at=user.created_at,
+    )
 
 
 def refresh_token_to_orm(token: DomainRefreshToken) -> OrmRefreshToken:
-    token_dict = asdict(token)
-    return OrmRefreshToken(token_dict)
+    return OrmRefreshToken(
+        token_id=token.token_id,
+        hashed_token=token.hashed_token,
+        status=token.status,
+        user_id=token.user_id,
+        created_at=token.created_at,
+        family_id=token.family_id,
+        expires_at=token.expires_at,
+        revoked_at=token.revoked_at,
+    )   
+
+
 
 
 def orm_to_refresh_token(orm: OrmRefreshToken) -> DomainRefreshToken:

@@ -1,4 +1,4 @@
-from app.domain.RefreshToken import RefreshToken
+from app.domain.RefreshToken import RefreshToken, TokenStatus
 from app.schemas.user import RegisterUser
 from app.schemas.auth import LoginData, TokenData
 from app.domain.User import User
@@ -88,11 +88,15 @@ class AuthService:
                 await self.uow.refresh_tokens.revoke_all_tokens_by_family_id(
                     stored_token.family_id
                 )
+                await self.uow.commit()
                 raise RefreshTokenReUsedDetection(
-                    "Refresh token reuse detected; session revoked",
-                    details={"user_id": str(stored_token.user_id)},
+                    "Refresh token reuse detected; token revoked",
+                    details={"WWW-Authenticate": "Bearer"},
                 )
             if stored_token.is_expired():
+                stored_token.status = TokenStatus.EXPIRED
+                await self.uow.refresh_tokens.save(stored_token)
+                await self.uow.commit()
                 raise RefreshTokenValidationException(
                     "Refresh token expired",
                     details={"WWW-Authenticate": "Bearer"},
@@ -125,14 +129,18 @@ class AuthService:
                 hash_token(token)
             )
             if stored_token is None or stored_token.is_expired():
+                stored_token.status = TokenStatus.EXPIRED
+                await self.uow.refresh_tokens.save(stored_token)
+                await self.uow.commit()
                 return  # idempotent, nothing to do
             if stored_token.is_revoked():
                 await self.uow.refresh_tokens.revoke_all_tokens_by_family_id(
                     stored_token.family_id
                 )
+                await self.uow.commit()
                 raise RefreshTokenReUsedDetection(
                     "Refresh token reuse detected; session revoked",
-                    details={"user_id": str(stored_token.user_id)},
+                    details={"WWW-Authenticate": "Bearer"},
                 )
             stored_token.revoke()
             await self.uow.refresh_tokens.save(stored_token)

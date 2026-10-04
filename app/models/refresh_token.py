@@ -33,4 +33,4 @@ class RefreshToken(Base):
         DateTime(timezone=True), nullable=False
     )
     status: Mapped[TokenStatus] = mapped_column(default=TokenStatus.ACTIVE)
-    revoked_at: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), nullable=True)
+    revoked_at: Mapped[uuid.UUID] = mapped_column(DateTime(timezone=True), nullable=True)

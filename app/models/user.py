@@ -31,7 +31,7 @@ class User(Base):
         default= lambda :datetime.now(timezone.utc)  
     )
     
-    sessions: Mapped[list["Session"]] = relationship(
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
+    # sessions: Mapped[list["Session"]] = relationship(
+    #     back_populates="user",
+    #     cascade="all, delete-orphan",
+    # )

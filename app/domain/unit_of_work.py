@@ -12,7 +12,7 @@ class AbstractUnitOfWork(ABC):
 
     @abstractmethod
     async def __aexit__(self, *args) -> None:
-        self.rollback()
+        await self.rollback()
 
     @abstractmethod
     async def commit(self) -> None: ...
