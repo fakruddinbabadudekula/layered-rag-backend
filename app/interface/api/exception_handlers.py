@@ -1,12 +1,9 @@
 """Module for custom fastapi exception handler and register them with the app.
 contains a function called registration_exception_handler to regiser the handlers to the given fastapi instance
 """
-
-from urllib import response
-
 from fastapi import Request, FastAPI
 from fastapi.responses import JSONResponse
-from app.api.cookie import delete_refresh_cookie
+from app.interface.api.cookie import delete_refresh_cookie
 from app.core.exceptions import AppException
 import logging
 from fastapi.exceptions import RequestValidationError
