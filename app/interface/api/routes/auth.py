@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, Response, status, Cookie
+from app.domain.unit_of_work import AbstractUnitOfWork
 from app.interface.api.schemas.auth import AccessTokenResponse
 from app.interface.api.cookie import delete_refresh_cookie, set_refresh_cookie
-from app.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 from app.application.auth_service import AuthService
-from app.core.db import async_session_factory
 from app.schemas.auth import LoginData
+from app.interface.api.dependencies import get_uow
+
 
 router = APIRouter()
-auth_service = AuthService(SqlAlchemyUnitOfWork(async_session_factory))
 
 
 @router.post(
@@ -19,8 +19,7 @@ auth_service = AuthService(SqlAlchemyUnitOfWork(async_session_factory))
     },
 )
 async def login(
-    payload: LoginData,
-    response: Response,
+    payload: LoginData, response: Response, uow: AbstractUnitOfWork = Depends(get_uow)
 ) -> AccessTokenResponse:
     """
     Authenticate a user and issue tokens.
@@ -30,6 +29,7 @@ async def login(
     - Sets a **refresh token** as an `HttpOnly` cookie, scoped to
       `/api/v1/auth/refresh`, valid for 7 days.
     """
+    auth_service = AuthService(uow)
     token_data = await auth_service.login(payload)
     set_refresh_cookie(response, token_data.refresh_token)
     return AccessTokenResponse(
@@ -48,8 +48,9 @@ async def login(
 async def refresh(
     response: Response,
     token=Cookie(alias="refresh_token"),
+    uow: AbstractUnitOfWork = Depends(get_uow),
 ) -> AccessTokenResponse:
-
+    auth_service = AuthService(uow)
     token_data = await auth_service.refresh(token)
     set_refresh_cookie(response, token_data.refresh_token)
     return AccessTokenResponse(
@@ -65,8 +66,9 @@ async def refresh(
 async def logout(
     response: Response,
     token=Cookie(alias="refresh_token"),
+    uow: AbstractUnitOfWork = Depends(get_uow),
 ):
-
+    auth_service = AuthService(uow)
     await auth_service.logout(token)
     delete_refresh_cookie(response)
 

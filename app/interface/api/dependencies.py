@@ -12,6 +12,9 @@ from sqlalchemy import select
 from app.core.db import get_db
 from app.core.security import decode_token
 import uuid
+from app.domain.unit_of_work import AbstractUnitOfWork
+from app.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
+from app.core.db import async_session_factory
 
 security = HTTPBearer()
 
@@ -55,3 +58,7 @@ async def get_current_user(
     if user==None:
         raise credentials_exception
     return user
+
+
+def get_uow()->AbstractUnitOfWork:
+    return SqlAlchemyUnitOfWork(async_session_factory)
