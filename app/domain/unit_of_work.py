@@ -1,10 +1,19 @@
 from abc import ABC, abstractmethod
-from app.domain.repositories import refresh_token_repository, user_repository
+from app.domain.repositories import (
+    notebook_repository,
+    refresh_token_repository,
+    user_repository,
+    file_repository,
+    chunk_repository,
+)
 
 
 class AbstractUnitOfWork(ABC):
     refresh_tokens: refresh_token_repository.AbstractRefreshTokenRepository
     users: user_repository.AbstractUserRepository
+    files: file_repository.AbstractFileStorageRepository
+    notebooks: notebook_repository.AbstractNotebookRepository
+    chunks: chunk_repository.AbstractChunkRepository
 
     @abstractmethod
     async def __aenter__(self) -> "AbstractUnitOfWork":

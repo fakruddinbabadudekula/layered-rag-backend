@@ -3,7 +3,10 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.infrastructure.sqlalchemy_repositories import (
     user_repository,
     refresh_token_repository,
+    notebook_repository,
+    chunk_repository,
 )
+from app.infrastructure.file_repository import FileStorageRepository
 
 
 class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
@@ -14,9 +17,12 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     async def __aenter__(self):
         self.db_session = self.session_maker()
         self.users = user_repository.UserRepository(self.db_session)
-        self.refresh_tokens= refresh_token_repository.RefreshTokenRepository(
+        self.refresh_tokens = refresh_token_repository.RefreshTokenRepository(
             self.db_session
         )
+        self.notebooks = notebook_repository.NotebookRepository(self.db_session)
+        self.files = FileStorageRepository(self.db_session)
+        self.chunks = chunk_repository.ChunkRepository(self.db_session)
         return await super().__aenter__()
 
     async def commit(self) -> None:
