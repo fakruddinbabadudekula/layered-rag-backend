@@ -4,10 +4,10 @@ contains only register router"""
 from fastapi import APIRouter, Depends
 from app.schemas.user import RegisterUser
 from app.interface.api.schemas.auth import BaseUser
-from app.application.auth_service import AuthService
 from fastapi import status
 from app.domain.unit_of_work import AbstractUnitOfWork
 from app.interface.api.dependencies import get_uow
+from app.core.composition import get_auth_service
 
 router = APIRouter()
 
@@ -28,5 +28,5 @@ async def register(payload: RegisterUser, uow: AbstractUnitOfWork = Depends(get_
     Passwords are hashed with Argon2 before storage; the raw password is
     never persisted or returned.
     """
-    auth_service = AuthService(uow)
+    auth_service = get_auth_service(uow)
     return await auth_service.register(payload)

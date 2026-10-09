@@ -55,12 +55,12 @@ class NotebookRepository(AbstractNotebookRepository):
         )
 
     async def save(self, notebook: DomainNotebook) -> None:
-        if notebook.has_changes():
+        if notebook.has_changes:
             messages_orm = [
-                message_to_orm(message_orm) for message_orm in (notebook.messages or [])
+                message_to_orm(message_orm) for message_orm in (notebook.new_messages or [])
             ]
             files_orm = [
-                file_to_orm(file_orm) for file_orm in (notebook.files_metadata or [])
+                file_to_orm(file_orm) for file_orm in (notebook.new_files_metadata or [])
             ]
             if messages_orm:
                 self._db.add_all(messages_orm)

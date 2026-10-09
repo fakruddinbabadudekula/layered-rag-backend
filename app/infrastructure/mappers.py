@@ -1,5 +1,3 @@
-from turtle import title
-
 from app.domain.Notebook import (
     Notebook as DomainNotebook,
     Message as DomainMessage,
@@ -7,11 +5,13 @@ from app.domain.Notebook import (
 )
 from app.domain.User import User as DomainUser
 from app.domain.RefreshToken import RefreshToken as DomainRefreshToken
+from app.domain.Chunk import Chunk as DomainChunk
 from app.models.user import User as OrmUser
 from app.models.refresh_token import RefreshToken as OrmRefreshToken
 from app.models.notebook import Notebook as OrmNotebook
 from app.models.file import FileMetadata as OrmFileMetadata
 from app.models.message import Message as OrmMessage
+from app.models.chunk import Chunk as OrmChunk
 
 
 def orm_to_user(orm: OrmUser) -> DomainUser:
@@ -128,3 +128,11 @@ def orm_to_file(orm: OrmFileMetadata) -> DomainFileMetadata:
         size=orm.size,
         created_at=orm.created_at,
     )
+
+
+def orm_to_chunk(orm: OrmChunk) -> DomainChunk:
+    return DomainChunk(chunk_id=orm.chunk_id, file_id=orm.file_id)
+
+
+def chunk_to_orm(chunk: DomainChunk) -> OrmChunk:
+    return OrmChunk(chunk_id=chunk.chunk_id, file_id=chunk.file_id)

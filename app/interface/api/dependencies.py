@@ -15,6 +15,7 @@ import uuid
 from app.domain.unit_of_work import AbstractUnitOfWork
 from app.infrastructure.unit_of_work import SqlAlchemyUnitOfWork
 from app.core.db import async_session_factory
+from app.interface.api.schemas.auth import CurrentUserContext
 
 security = HTTPBearer()
 
@@ -22,16 +23,8 @@ security = HTTPBearer()
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: AsyncSession = Depends(get_db),
-) -> User:
-    """Dependecy method to get_current_user
-    Args:
-        credentials:HTTPAuthorizationCredentials = contains bearer token
-        db:AsyncSession = Database connection instance.
-    Returns:
-        current_user:User = Current User instance.
-    Raises:
-        InvalidCredentialsException: raises if invalid credentials,Token Expired and jwterror"""
-    
+) -> CurrentUserContext:
+
     # raise when JWTError or invalid raise
     credentials_exception = InvalidCredentialsException(
         "Invalid credentials or token", details={"WWW-Authenticate": "Bearer"}
@@ -57,7 +50,10 @@ async def get_current_user(
     user = result.scalars().first()
     if user==None:
         raise credentials_exception
-    return user
+    return CurrentUserContext(
+        email=user.email,
+        user_id=user.user_id
+    )
 
 
 def get_uow()->AbstractUnitOfWork:

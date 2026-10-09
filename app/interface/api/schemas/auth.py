@@ -1,5 +1,7 @@
 """Module for schemas which are specific for auth router"""
 
+from dataclasses import dataclass
+import uuid
 from pydantic import BaseModel, ConfigDict, field_validator
 from datetime import datetime
 
@@ -30,3 +32,9 @@ class AccessTokenResponse(BaseModel):
 class DeleteUser(BaseModel):
     email: str
     password: str
+
+@dataclass
+class CurrentUserContext():
+    email:str
+    user_id:uuid.UUID
+    

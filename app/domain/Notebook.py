@@ -12,7 +12,7 @@ class MessageRole(str, Enum):
 
 
 class FileType(str, Enum):
-    PDF = "pdf"
+    PDF = ".pdf"
 
 
 @dataclass

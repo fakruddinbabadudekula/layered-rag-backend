@@ -5,9 +5,11 @@ from logging import getLogger
 from app.interface.api.exception_handlers import register_exception_handlers
 from app.interface.api.routes.auth import router as auth_router
 from app.interface.api.routes.register import router as register_router
+from app.interface.api.routes.upload import router as upload_router
 from app.interface.api.middleware import logger_middleware
 from contextlib import asynccontextmanager
 from app.core.config import settings
+from app.core.composition import get_vector_store
 
 
 def create_required_dir():
@@ -25,6 +27,7 @@ logger = getLogger(__name__)
 async def lifespan(app):
     setup_logging()
     create_required_dir()
+    app.state.vector_store = get_vector_store()
     logger.info("Server Started")
     await init_db()
     logger.info("Tables are created ")
@@ -70,6 +73,7 @@ register_exception_handlers(app=app)
 
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(register_router, prefix="/api/v1", tags=["register"])
+app.include_router(upload_router, prefix="/api/v1", tags=["upload"])
 
 
 @app.get("/")

@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends, Response, status, Cookie
 from app.domain.unit_of_work import AbstractUnitOfWork
 from app.interface.api.schemas.auth import AccessTokenResponse
 from app.interface.api.cookie import delete_refresh_cookie, set_refresh_cookie
-from app.application.auth_service import AuthService
 from app.schemas.auth import LoginData
 from app.interface.api.dependencies import get_uow
-
+from app.core.composition import get_auth_service
 
 router = APIRouter()
 
@@ -29,7 +28,7 @@ async def login(
     - Sets a **refresh token** as an `HttpOnly` cookie, scoped to
       `/api/v1/auth/refresh`, valid for 7 days.
     """
-    auth_service = AuthService(uow)
+    auth_service = get_auth_service(uow)
     token_data = await auth_service.login(payload)
     set_refresh_cookie(response, token_data.refresh_token)
     return AccessTokenResponse(
@@ -50,7 +49,7 @@ async def refresh(
     token=Cookie(alias="refresh_token"),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ) -> AccessTokenResponse:
-    auth_service = AuthService(uow)
+    auth_service = get_auth_service(uow)
     token_data = await auth_service.refresh(token)
     set_refresh_cookie(response, token_data.refresh_token)
     return AccessTokenResponse(
@@ -68,7 +67,7 @@ async def logout(
     token=Cookie(alias="refresh_token"),
     uow: AbstractUnitOfWork = Depends(get_uow),
 ):
-    auth_service = AuthService(uow)
+    auth_service = get_auth_service(uow)
     await auth_service.logout(token)
     delete_refresh_cookie(response)
 
