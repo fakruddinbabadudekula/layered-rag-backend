@@ -21,7 +21,7 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
             self.db_session
         )
         self.notebooks = notebook_repository.NotebookRepository(self.db_session)
-        self.files = FileStorageRepository(self.db_session)
+        self.files = FileStorageRepository()
         self.chunks = chunk_repository.ChunkRepository(self.db_session)
         return await super().__aenter__()
 
@@ -34,3 +34,6 @@ class SqlAlchemyUnitOfWork(AbstractUnitOfWork):
     async def __aexit__(self, *args) -> None:
         await super().__aexit__(*args)
         await self.db_session.close()
+
+    async def flush(self):
+        await self.db_session.flush()

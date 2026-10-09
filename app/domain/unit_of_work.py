@@ -28,3 +28,6 @@ class AbstractUnitOfWork(ABC):
 
     @abstractmethod
     async def rollback(self) -> None: ...
+
+    @abstractmethod
+    async def flush(self)->None:...
