@@ -1,22 +1,22 @@
 from uuid import UUID
 
 from app.domain.entities.RetrieverFilter import RetrieverFilter
-from app.rag_dd.interface.workflow import Workflow
+from app.rag.interface.workflow import Workflow
 from app.infrastructure.rag.workflow import LangGraphWorkflow
-from app.rag_dd.interface.doc_process import (
+from app.rag.interface.doc_process import (
     AbstractDocumentLoader,
     AbstractTextSplitter,
 )
-from app.rag_dd.interface.llm_client import AsyncLLMClient
+from app.rag.interface.llm_client import AsyncLLMClient
 from app.infrastructure.rag.llm_clients import LLMClient, RetryConfig
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 from app.infrastructure.rag.loaders import PDFLoader
 from app.infrastructure.rag.splitters import RecursiveCharacterSplitter
 from app.infrastructure.rag.doc_loader import LangchainDocumentLoader
-from app.rag_dd.interface.doc_loader import DocumentLoader
+from app.rag.interface.doc_loader import DocumentLoader
 from app.core.config import settings
-from app.rag_dd.interface.vector_store import AbstractVectorStore
+from app.rag.interface.vector_store import AbstractVectorStore
 from app.infrastructure.rag.vector_stores.faiss_store import FaissStore
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from app.infrastructure.file_repository import FileStorageRepository
@@ -146,3 +146,6 @@ def get_notebook_chat_service(
     return NotebookChatService(
         uow=uow, vector_store=vector_store, workflow=get_rag_workflow(), retryable_exceptions=get_retryable_llm_exceptions()
     )
+
+def get_refresh_token_expire_days()->int:
+    return settings.REFRESH_TOKEN_EXPIRE_DAYS

@@ -1,5 +1,5 @@
 from typing import Any
-from app.rag_dd.interface.doc_process import (
+from app.rag.interface.doc_process import (
     AbstractTextSplitter,
     AbstractDocumentLoader,
 )

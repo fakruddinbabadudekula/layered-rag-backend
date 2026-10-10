@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, List, Optional
 if TYPE_CHECKING:
     from app.models.message import Message
     from app.models.file import FileMetadata
+    from app.models.user import User
 
 
 class Notebook(Base):
@@ -41,3 +42,4 @@ class Notebook(Base):
         cascade="all, delete-orphan",
         order_by="FileMetadata.created_at",
     )
+    user: Mapped["User"] = relationship(back_populates="notebooks")

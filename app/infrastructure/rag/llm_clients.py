@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from app.rag_dd.interface.llm_client import AsyncLLMClient
+from app.rag.interface.llm_client import AsyncLLMClient
 from langchain_core.messages import AIMessage
 from langchain_core.language_models.chat_models import BaseChatModel
 from tenacity import (

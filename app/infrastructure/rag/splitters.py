@@ -1,4 +1,4 @@
-from app.rag_dd.interface.doc_process import AbstractTextSplitter
+from app.rag.interface.doc_process import AbstractTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 

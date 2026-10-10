@@ -1,6 +1,6 @@
 from pathlib import Path
 from pydoc import Doc
-from app.rag_dd.interface.vector_store import AbstractVectorStore
+from app.rag.interface.vector_store import AbstractVectorStore
 import faiss
 from langchain_community.vectorstores import FAISS
 from langchain_core.embeddings import Embeddings

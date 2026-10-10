@@ -1,6 +1,4 @@
-from typing import Any
-
-from app.rag_dd.interface.doc_process import (
+from app.rag.interface.doc_process import (
     AbstractTextSplitter,
     AbstractDocumentLoader,
 )
@@ -8,7 +6,7 @@ from app.domain.entities.DocumentChunk import DocumentChunk
 from pathlib import Path
 import logging
 import time
-from app.rag_dd.interface.doc_loader import DocumentLoader
+from app.rag.interface.doc_loader import DocumentLoader
 
 logger = logging.getLogger(__name__)
 

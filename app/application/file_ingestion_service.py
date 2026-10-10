@@ -6,7 +6,7 @@ from uuid import UUID
 from app.core.exceptions import InvalidCredentialsException
 from app.domain.Notebook import Notebook, FileMetadata
 from app.core.exceptions import InvalidFilePaths, UnSupportedResource
-from app.rag_dd.interface.doc_loader import DocumentLoader
+from app.rag.interface.doc_loader import DocumentLoader
 from app.application.vector_store_service import VectorStoreService
 from app.domain.Chunk import Chunk
 

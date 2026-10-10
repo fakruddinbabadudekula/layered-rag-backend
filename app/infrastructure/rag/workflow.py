@@ -1,6 +1,6 @@
 import time
-from app.rag_dd.interface.llm_client import AsyncLLMClient
-from app.rag_dd.interface.vector_store import AbstractVectorStore
+from app.rag.interface.llm_client import AsyncLLMClient
+from app.rag.interface.vector_store import AbstractVectorStore
 from langgraph.graph.state import CompiledStateGraph
 from langgraph.graph import StateGraph, END, START
 from langchain_core.vectorstores.base import VectorStoreRetriever
@@ -11,7 +11,7 @@ from langchain_core.messages import BaseMessage, SystemMessage, AIMessage, Human
 from logging import getLogger
 from app.domain.Notebook import Message, MessageRole
 from app.domain.entities.RetrieverFilter import RetrieverFilter
-from app.rag_dd.interface.workflow import Workflow
+from app.rag.interface.workflow import Workflow
 
 logger = getLogger(__name__)
 

@@ -1,6 +1,6 @@
 from typing import Any
 
-from app.rag_dd.interface.vector_store import AbstractVectorStore
+from app.rag.interface.vector_store import AbstractVectorStore
 from app.domain.entities.DocumentChunk import DocumentChunk
 import time
 import logging

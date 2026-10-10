@@ -7,7 +7,7 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from app.models.session import Session
+    from app.models.notebook import Notebook
 
 
 
@@ -31,7 +31,7 @@ class User(Base):
         default= lambda :datetime.now(timezone.utc)  
     )
     
-    # sessions: Mapped[list["Session"]] = relationship(
-    #     back_populates="user",
-    #     cascade="all, delete-orphan",
-    # )
+    notebooks: Mapped[list["Notebook"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )

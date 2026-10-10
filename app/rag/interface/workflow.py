@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 from app.domain.entities.RetrieverFilter import RetrieverFilter
-from app.rag_dd.interface.vector_store import AbstractVectorStore
+from app.rag.interface.vector_store import AbstractVectorStore
 from app.domain.Notebook import Message
 
 

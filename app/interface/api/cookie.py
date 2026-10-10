@@ -1,5 +1,5 @@
 from fastapi import Response, Cookie
-from app.core.config import settings
+from app.core.composition import get_refresh_token_expire_days
 
 
 def set_refresh_cookie(response: Response, token: str):
@@ -13,7 +13,7 @@ def set_refresh_cookie(response: Response, token: str):
         max_age=60
         * 60
         * 24
-        * settings.REFRESH_TOKEN_EXPIRE_DAYS,  # why we multiply, because max_age accepts in seconds.
+        * get_refresh_token_expire_days(),  # why we multiply, because max_age accepts in seconds.
     )
 
 

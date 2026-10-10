@@ -3,10 +3,10 @@ from typing import Any
 from uuid import UUID
 from app.domain.entities.RetrieverFilter import RetrieverFilter
 from app.domain.unit_of_work import AbstractUnitOfWork
-from app.rag_dd.interface.vector_store import AbstractVectorStore
+from app.rag.interface.vector_store import AbstractVectorStore
 from app.core.exceptions import InvalidCredentialsException, LLMServieException
 from app.domain.Notebook import MessageRole, TopKDocs
-from app.rag_dd.interface.workflow import Workflow
+from app.rag.interface.workflow import Workflow
 
 class NotebookChatService:
     def __init__(

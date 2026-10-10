@@ -1,4 +1,4 @@
-from app.rag_dd.interface.doc_process import AbstractDocumentLoader
+from app.rag.interface.doc_process import AbstractDocumentLoader
 from langchain_community.document_loaders import PyMuPDFLoader
 
 
