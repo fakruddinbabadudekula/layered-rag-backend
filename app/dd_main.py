@@ -6,6 +6,7 @@ from app.interface.api.exception_handlers import register_exception_handlers
 from app.interface.api.routes.auth import router as auth_router
 from app.interface.api.routes.register import router as register_router
 from app.interface.api.routes.upload import router as upload_router
+from app.interface.api.routes.chat import router as chat_router
 from app.interface.api.middleware import logger_middleware
 from contextlib import asynccontextmanager
 from app.core.config import settings
@@ -74,7 +75,7 @@ register_exception_handlers(app=app)
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(register_router, prefix="/api/v1", tags=["register"])
 app.include_router(upload_router, prefix="/api/v1", tags=["upload"])
-
+app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
 
 @app.get("/")
 def hello():

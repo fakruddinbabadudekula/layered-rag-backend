@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Any
 from uuid import UUID, uuid4
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -16,6 +17,19 @@ class FileType(str, Enum):
 
 
 @dataclass
+class TopKDocs:
+    index: int
+    id: UUID
+
+    @classmethod
+    def create(cls, index: int, id: UUID):
+        return cls(index=index, id=id)
+
+    def as_dict(self)->dict[str,Any]:
+        return {"index": self.index, "id": self.id}
+
+
+@dataclass
 class FileMetadata:
     file_id: UUID
     notebook_id: UUID
@@ -25,7 +39,9 @@ class FileMetadata:
     created_at: datetime
 
     @classmethod
-    def create(cls, notebook_id: UUID, type: FileType, name: str, size: int) -> FileMetadata:
+    def create(
+        cls, notebook_id: UUID, type: FileType, name: str, size: int
+    ) -> FileMetadata:
         return cls(
             file_id=uuid4(),
             notebook_id=notebook_id,
@@ -42,7 +58,7 @@ class Message:
     role: MessageRole
     content: str
     notebook_id: UUID
-    top_k_docs_ids: list[UUID] | None
+    top_k_docs_ids_with_index: list[TopKDocs] | None
     created_at: datetime
 
     @classmethod
@@ -51,13 +67,13 @@ class Message:
         role: MessageRole,
         content: str,
         notebook_id: UUID,
-        top_k_docs_ids: list[UUID] | None = None,
+        top_k_docs_ids_with_index: list[TopKDocs] | None = None,
     ) -> Message:
         return cls(
             message_id=uuid4(),
             created_at=datetime.now(timezone.utc),
             role=role,
-            top_k_docs_ids=top_k_docs_ids,
+            top_k_docs_ids_with_index=top_k_docs_ids_with_index,
             content=content,
             notebook_id=notebook_id,
         )
@@ -83,8 +99,15 @@ class Notebook:
             created_at=datetime.now(timezone.utc),
         )
 
-    def add_message(self, role: MessageRole, content: str, top_k_docs_ids: list[UUID] | None = None) -> Message:
-        message = Message.create(role, content, self.notebook_id, top_k_docs_ids)
+    def add_message(
+        self,
+        role: MessageRole,
+        content: str,
+        top_k_docs_ids_with_index: list[TopKDocs] | None = None,
+    ) -> Message:
+        message = Message.create(
+            role, content, self.notebook_id, top_k_docs_ids_with_index
+        )
         self.messages.append(message)
         self._new_messages.append(message)
         return message
@@ -109,4 +132,4 @@ class Notebook:
 
     def clear_changes(self) -> None:
         self._new_messages.clear()
-        self._new_files_metadata.clear()   
+        self._new_files_metadata.clear()

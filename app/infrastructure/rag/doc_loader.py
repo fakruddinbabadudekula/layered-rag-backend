@@ -8,11 +8,12 @@ from app.domain.entities.DocumentChunk import DocumentChunk
 from pathlib import Path
 import logging
 import time
+from app.rag_dd.interface.doc_loader import DocumentLoader
 
 logger = logging.getLogger(__name__)
 
 
-class DocumentLoader:
+class LangchainDocumentLoader(DocumentLoader):
 
     def __init__(
         self, loaders: dict[str, AbstractDocumentLoader], splitter: AbstractTextSplitter
@@ -32,8 +33,9 @@ class DocumentLoader:
             raise ValueError(f"unsupported_file_type. ext={ext}")
         return ext
 
-    async def execute(
-        self, file_path: Path, metadata: dict[str, Any]|None
+    async def load_and_split(
+        self,
+        file_path: Path,
     ) -> list[DocumentChunk]:
         ext = self._validate_and_return_ext(file_path)
         loader = self._loaders[ext]
@@ -60,5 +62,6 @@ class DocumentLoader:
         )
 
         return [
-            DocumentChunk.create(content.page_content, metadata) for content in chunks
+            DocumentChunk.create(content.page_content, content.metadata)
+            for content in chunks
         ]

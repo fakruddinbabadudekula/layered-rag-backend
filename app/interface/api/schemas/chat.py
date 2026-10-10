@@ -1,14 +1,15 @@
 """Module for schemas which are specific for chat request"""
-from typing import List,Dict
 
 from pydantic import BaseModel
-from typing import Optional
 import uuid
+
+
 class ChatRequest(BaseModel):
-    session_id:Optional[uuid.UUID]=None
-    query:str
-    
+    notebook_id: uuid.UUID
+    query: str
+
+
 class ChatRespose(BaseModel):
-    query:str
-    response:str
-    top_k_docs:List[Dict]
+    query: str
+    response: str
+    top_k_context: list[dict]

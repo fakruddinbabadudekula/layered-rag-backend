@@ -6,7 +6,7 @@ from uuid import UUID
 from app.core.exceptions import InvalidCredentialsException
 from app.domain.Notebook import Notebook, FileMetadata
 from app.core.exceptions import InvalidFilePaths, UnSupportedResource
-from app.rag_dd.doc_loader import DocumentLoader
+from app.rag_dd.interface.doc_loader import DocumentLoader
 from app.application.vector_store_service import VectorStoreService
 from app.domain.Chunk import Chunk
 
@@ -96,8 +96,10 @@ class FileIngestionService:
                 "file_ext": str(file_metadata.type),
                 "file_id": str(file_metadata.file_id),
             }
-            docs = await self._doc_loader.execute(file_destination, metadata)
-            doc_ids = await self._vector_service.aadd_documents(docs)
+            docs = await self._doc_loader.load_and_split(file_destination)
+            doc_ids = await self._vector_service.aadd_documents_with_metadata(
+                docs, metadata
+            )
 
             chunks = [
                 Chunk(chunk_id=chunk_id, file_id=file_metadata.file_id)

@@ -2,6 +2,7 @@ from app.domain.Notebook import (
     Notebook as DomainNotebook,
     Message as DomainMessage,
     FileMetadata as DomainFileMetadata,
+    TopKDocs,
 )
 from app.domain.User import User as DomainUser
 from app.domain.RefreshToken import RefreshToken as DomainRefreshToken
@@ -92,7 +93,11 @@ def message_to_orm(message: DomainMessage) -> OrmMessage:
         notebook_id=message.notebook_id,
         content=message.content,
         role=message.role,
-        top_k_docs_ids=message.top_k_docs_ids,
+        top_k_docs_ids_with_index=(
+            [docs.as_dict() for docs in message.top_k_docs_ids_with_index]
+            if message.top_k_docs_ids_with_index
+            else None
+        ),
         created_at=message.created_at,
     )
 
@@ -103,7 +108,10 @@ def orm_to_message(orm: OrmMessage) -> DomainMessage:
         notebook_id=orm.notebook_id,
         content=orm.content,
         role=orm.role,
-        top_k_docs_ids=orm.top_k_docs_ids,
+        top_k_docs_ids_with_index=[
+            TopKDocs.create(doc["index"], doc["id"])
+            for doc in orm.top_k_docs_ids_with_index
+        ] if orm.top_k_docs_ids_with_index else None,
         created_at=orm.created_at,
     )
 

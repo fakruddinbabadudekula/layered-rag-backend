@@ -1,3 +1,5 @@
+from typing import Any
+
 from app.rag_dd.interface.vector_store import AbstractVectorStore
 from app.domain.entities.DocumentChunk import DocumentChunk
 import time
@@ -10,11 +12,23 @@ class VectorStoreService:
     def __init__(self, vector_store: AbstractVectorStore):
         self._vector_store = vector_store
 
-    async def aadd_documents(self, docs: list[DocumentChunk]) -> list[str]:
+    def _add_additional_metadata_to_doc(
+        self, docs: list[DocumentChunk], metadata: dict
+    ) -> DocumentChunk:
+        for doc in docs:
+            doc.metadata.update(metadata)
+        return docs
+
+    async def aadd_documents_with_metadata(
+        self, docs: list[DocumentChunk], metadata: dict[str, Any] | None
+    ) -> list[str]:
         start = time.perf_counter()
         if len(docs) == 0 or not docs:
             raise ValueError(f"Docs must be atleast one. Passed empty")
-        docs_ids = await self._vector_store.add_documents(docs)
+
+        docs_ids = await self._vector_store.add_documents(
+            self._add_additional_metadata_to_doc(docs, metadata)
+        )
         logger.info(
             "Successfully_added_docs_to_vector_store",
             extra={

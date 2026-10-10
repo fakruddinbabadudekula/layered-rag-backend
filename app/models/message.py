@@ -1,12 +1,12 @@
 """Module for message database model"""
 
-from typing import List
+from typing import Any
 from app.core.db import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
-from sqlalchemy import ForeignKey, DateTime, func, Text, Enum as SqlEnum, ARRAY, UUID
+from sqlalchemy import ForeignKey, DateTime, func, Text, Enum as SqlEnum
 import uuid
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID, JSON
 from app.domain.Notebook import MessageRole
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -29,8 +29,9 @@ class Message(Base):
     content: Mapped[str] = mapped_column(Text)
     role: Mapped[MessageRole] = mapped_column(SqlEnum(MessageRole), nullable=False)
 
-    top_k_docs_ids: Mapped[List[uuid.UUID] | None] = mapped_column(
-        ARRAY(UUID(as_uuid=True)), nullable=True
+    top_k_docs_ids_with_index: Mapped[list[dict[str, Any]] | None] = mapped_column(
+        JSON,
+        nullable=True,
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
